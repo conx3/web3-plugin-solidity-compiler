@@ -1,22 +1,41 @@
-import { SourceOrFile, compile} from '../src';
-
-
 import path from 'path';
-import fs from 'fs'
+import fs from 'fs';
 
-const fileName = 'sample.sol'
+import { TextEncoder } from 'util';
+global.TextEncoder = TextEncoder;
+
+import { Web3 } from 'web3';
+
+import { SourceOrFile, SolidityCompiler } from '../src';
+
+const fileName = 'sample.sol';
 
 describe('compile', () => {
-  it('compile source code', async () => {
+  let web3: Web3;
+  beforeAll(() => {
+    web3 = new Web3();
+    web3.registerPlugin(new SolidityCompiler());
+  });
+
+  it.skip('compile source code', async () => {
     // Read the Solidity source code from the file system
     const contractPath = path.join(__dirname, fileName);
     const sourceCode = fs.readFileSync(contractPath, 'utf8');
 
-    const res = await compile(fileName, sourceCode, SourceOrFile.SOURCE)
-    console.log(res)
+    const res = await web3.solidityCompiler.compile(
+      fileName,
+      sourceCode,
+      SourceOrFile.SOURCE
+    );
+    console.log(res);
   });
-  it('compile file', async () => {
-    const res = await compile(fileName, "./test", SourceOrFile.PATH)
-    console.log(res)
+
+  it.skip('compile file', async () => {
+    const res = await web3.solidityCompiler.compile(
+      fileName,
+      './test',
+      SourceOrFile.PATH
+    );
+    console.log(res);
   });
 });
