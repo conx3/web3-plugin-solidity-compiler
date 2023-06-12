@@ -1,12 +1,11 @@
-import path from 'path';
 import fs from 'fs';
-
-import { TextEncoder } from 'util';
-global.TextEncoder = TextEncoder;
-
+import path from 'path';
 import { Web3 } from 'web3';
 
 import { SourceOrFile, SolidityCompiler } from '../src';
+
+import { TextEncoder } from 'util';
+global.TextEncoder = TextEncoder;
 
 const fileName = 'sample.sol';
 
