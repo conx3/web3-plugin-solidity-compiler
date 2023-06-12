@@ -1,11 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { Web3 } from 'web3';
-
-import { SourceOrFile, SolidityCompiler } from '../src';
 
 import { TextEncoder } from 'util';
 global.TextEncoder = TextEncoder;
+
+// eslint-disable-next-line import/first
+import { Web3 } from 'web3';
+// eslint-disable-next-line import/first
+import { SourceOrFile, SolidityCompiler } from '../src';
 
 const fileName = 'sample.sol';
 
