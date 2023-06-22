@@ -5,7 +5,7 @@ const config = {
     // '^axios$': require.resolve('axios'),
     'axios': 'axios/dist/node/axios.cjs'
   },
-  testTimeout: 99999,
+  testTimeout: 999999,
 };
 
 module.exports = config;

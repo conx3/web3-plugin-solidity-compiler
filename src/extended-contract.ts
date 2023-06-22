@@ -10,11 +10,10 @@ import {
 import { AbiAndBytecode, SolidityCompiler } from './solidity-compiler';
 
 export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
-  public readonly pluginNamespace;
+  public readonly pluginNamespace: string;
 
   public hadFinishedCompilation?: boolean;
-
-  public waitForCompilation?: Promise<AbiAndBytecode>;
+  public compilationResult?: Promise<AbiAndBytecode>;
 
   /**
    * Creates a new contract instance with all its methods and events defined in its {@doclink glossary/json_interface | json interface} object.
@@ -151,13 +150,14 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
         contextOrReturnFormat,
         returnFormat
       );
-      this.pluginNamespace = 'extendedContract';
       this.hadFinishedCompilation = false;
-      this.waitForCompilation = new Promise((resolve, reject) => {
+      this.compilationResult = new Promise((resolve, reject) => {
         const anyName = 'anyfilename';
         SolidityCompiler.compileSourceString(anyName, sourceCodeOrAbi)
           .then((compilationRes) => {
             if (compilationRes.abi && compilationRes.bytecodeString) {
+              // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
+              // @ts-ignore
               this.options.jsonInterface = compilationRes.abi;
               (this.options as { input: string }).input =
                 compilationRes.bytecodeString;
@@ -188,14 +188,16 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
         returnFormat
       );
 
-      this.waitForCompilation = new Promise((_, reject) => {
+      this.compilationResult = new Promise((_, reject) => {
         reject(
           new Error(
-            'You are not supposed to call `waitForCompilation()` because no source code was provided.'
+            'You are not supposed to call `compilationResult()` because no source code was provided.'
           )
         );
       });
     }
+
+    this.pluginNamespace = 'extendedContract';
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "license": "MIT",
+  "license": "CC-BY-NC-ND",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -45,6 +45,7 @@
     }
   ],
   "devDependencies": {
+    "@peculiar/webcrypto": "^1.4.3",
     "@size-limit/preset-small-lib": "^8.2.4",
     "husky": "^8.0.3",
     "size-limit": "^8.2.4",
