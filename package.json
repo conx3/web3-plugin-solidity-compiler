@@ -19,7 +19,9 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "web3": ">= 4.0.2 < 5"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -31,20 +33,21 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "web3-plugin-solidity-compiler",
+  "name": "web3-plugin-extended-contract",
   "author": "Muhammad-Altabba",
-  "module": "dist/web3-plugin-solidity-compiler.esm.js",
+  "module": "dist/web3-plugin-extended-contract.esm.js",
   "size-limit": [
     {
-      "path": "dist/web3-plugin-solidity-compiler.cjs.production.min.js",
+      "path": "dist/web3-plugin-extended-contract.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/web3-plugin-solidity-compiler.esm.js",
+      "path": "dist/web3-plugin-extended-contract.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
+    "@babel/preset-env": "^7.22.5",
     "@peculiar/webcrypto": "^1.4.3",
     "@size-limit/preset-small-lib": "^8.2.4",
     "husky": "^8.0.3",

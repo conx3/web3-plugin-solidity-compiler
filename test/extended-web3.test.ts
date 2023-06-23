@@ -88,13 +88,13 @@ describe('ExtendedWeb3 as plugin', () => {
     console.log('contractDeployed', contractDeployed.options.address);
 
     const myNumber = await contractDeployed.methods.myNumber().call();
-    expect(myNumber).toBe(1000n);
+    expect(myNumber).toBe(1000);
 
     await(contractDeployed.methods.setMyNumber as any)(100).send({
       from: accounts[0],
     });
     const myNumberModifled = await contractDeployed.methods.myNumber().call();
-    expect(myNumberModifled).toBe(100n);
+    expect(myNumberModifled).toBe(100);
   });
 
   it('raise error while compiling an invalid code', async () => {

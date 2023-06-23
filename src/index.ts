@@ -1,7 +1,4 @@
-export {
-  ExtendedContract,
-  ExtendedContract as Contract,
-} from './extended-contract';
+export { ExtendedContract } from './extended-contract';
 
 export { ExtendedWeb3 } from './extended-web3';
 
