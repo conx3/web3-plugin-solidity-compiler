@@ -1,38 +1,42 @@
 import './polyfills';
 
-import { ExtendedContract } from '../src/extended-contract';
+// eslint-disable-next-line import/first
+import { ExtendedWeb3 } from 'web3-plugin-extended-contract';
+
+// eslint-disable-next-line import/first
 import { Web3 } from 'web3';
 
 import {
   sourceCode,
   sampleContractAbi,
-  sampleContractBytecode3,
+  sampleContractBytecode2,
 } from './smart_contracts/sample-contract';
 
-describe('ExtendedContract', () => {
+describe('ExtendedWeb3 as plugin', () => {
   let web3: Web3;
   beforeAll(() => {
     web3 = new Web3('http://localhost:8545');
+    web3.registerPlugin(new ExtendedWeb3());
   });
 
   it('compile source code', async () => {
-    const contract = new ExtendedContract(sourceCode);
+    const contract = new web3.extendedWeb3.ExtendedContract(sourceCode);
     expect(contract.hadFinishedCompilation).toBe(false);
     const compilationResult = await contract.compilationResult;
     expect(contract.hadFinishedCompilation).toBe(true);
 
     expect(compilationResult).toMatchObject({
       abi: sampleContractAbi,
-      bytecodeString: sampleContractBytecode3,
+      bytecodeString: sampleContractBytecode2,
     });
 
     expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-    expect(contract.options.input).toEqual(sampleContractBytecode3);
+    expect(contract.options.input).toEqual(sampleContractBytecode2);
   });
 
   // This test case can be unskipped if there is a node running
   it.skip('deploy contract', async () => {
-    const contract = new ExtendedContract(sourceCode);
+    const contract = new web3.extendedWeb3.ExtendedContract(sourceCode);
     await contract.compilationResult;
 
     const accounts = await web3.eth.getAccounts();
@@ -60,7 +64,9 @@ describe('ExtendedContract', () => {
   });
 
   it('raise error while compiling an invalid code', async () => {
-    const contract = new ExtendedContract(sourceCode + ' invalid code');
+    const contract = new web3.extendedWeb3.ExtendedContract(
+      sourceCode + ' invalid code'
+    );
 
     const compilationResult = contract.compilationResult;
     expect(compilationResult).rejects.toThrow('Failed parsing imports');

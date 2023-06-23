@@ -8488,6 +8488,14 @@ web3-net@4.0.2-dev.af57eae.0+af57eae:
     web3-types "1.0.1-dev.af57eae.0+af57eae"
     web3-utils "4.0.2-dev.af57eae.0+af57eae"
 
+web3-plugin-extended-contract@^0.1.0-alpha.1:
+  version "0.1.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/web3-plugin-extended-contract/-/web3-plugin-extended-contract-0.1.0-alpha.1.tgz#40f6c842f6ca3eb1b0bb6ff6b781c7cadb2be436"
+  integrity sha512-Tufk/g4hAM2Je5rfAzewzq09i1VkHygEyVJQxKojlbg8Xz1lIqxqTivJWdTfvD/RwjioFePG2XdFN7J5pa9GkA==
+  dependencies:
+    solc-typed-ast "^15.0.0"
+    web3 "4.0.2-dev.af57eae.0"
+
 web3-providers-http@4.0.2-dev.af57eae.0+af57eae:
   version "4.0.2-dev.af57eae.0"
   resolved "https://registry.yarnpkg.com/web3-providers-http/-/web3-providers-http-4.0.2-dev.af57eae.0.tgz#05d612957826416590227152ac4beb66f873045b"

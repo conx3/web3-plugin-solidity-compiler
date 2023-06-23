@@ -25,7 +25,7 @@ export class ExtendedWeb3 extends Web3 {
     // To not receive the following warring in case of no provided provided to this instance
     // "NOTE: web3.js is running without provider. You need to pass a provider in order to interact with the network!"
     const warn = console.warn;
-    console.warn = function () {};
+    console.warn = function() {};
     super(provider);
     console.warn = warn;
 
@@ -72,7 +72,7 @@ export class ExtendedWeb3 extends Web3 {
             const anyName = 'contract';
 
             SolidityCompiler.compileSourceString(anyName, sourceCode)
-              .then((compilationRes) => {
+              .then(compilationRes => {
                 if (compilationRes.abi && compilationRes.bytecodeString) {
                   // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
                   // @ts-ignore
@@ -135,4 +135,3 @@ declare module 'web3' {
     };
   }
 }
-

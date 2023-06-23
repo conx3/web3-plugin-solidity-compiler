@@ -24,9 +24,9 @@ export class SolidityCompiler {
     result: CompileResult
   ): ScaffoldedCompileResult {
     let scaffoldedRes = result as ScaffoldedCompileResult;
-    Object.keys(result.data.contracts).forEach((fileName) => {
+    Object.keys(result.data.contracts).forEach(fileName => {
       scaffoldedRes[fileName] = {} as any;
-      Object.keys(result.data.contracts[fileName]).forEach((contractName) => {
+      Object.keys(result.data.contracts[fileName]).forEach(contractName => {
         const contract: {
           abi: ContractAbi;
           evm: { bytecode: { object: string } };
@@ -49,12 +49,14 @@ export class SolidityCompiler {
       }
     });
     if (Object.keys(result.data.contracts).length === 1) {
-      const contract = scaffoldedRes[Object.keys(result.data.contracts)[0]] as {
+      const contract = (scaffoldedRes[
+        Object.keys(result.data.contracts)[0]
+      ] as {
         [index: string]: {
           abi: ContractAbi;
           bytecodeString: string;
         };
-      } as any;
+      }) as any;
       (scaffoldedRes as any) = { ...scaffoldedRes, ...contract };
     }
     return scaffoldedRes;

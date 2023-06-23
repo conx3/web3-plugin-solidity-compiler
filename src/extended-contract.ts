@@ -16,7 +16,7 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
   public compilationResult?: Promise<AbiAndBytecode>;
 
   /**
-   * Creates a new contract instance with all its methods and events defined in its {@doclink glossary/json_interface | json interface} object.
+   * Creates a new contract instance with all its methods and events defined in its json interface object.
    *
    * ```ts
    * new web3.eth.Contract(jsonInterface[, address][, options])
