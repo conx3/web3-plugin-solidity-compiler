@@ -33,10 +33,10 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
    * @returns - The contract instance with all its methods and events.
    *
    * ```ts title="Example"
-   * var myContract = new web3.eth.Contract(
+   * var simpleContract = new web3.eth.Contract(
    *  '
    *  pragma solidity ^0.8.0;
-   *  contract MyContract {
+   *  contract SimpleContract {
    *      uint256 public myNumber;
    *      constructor(uint256 _myNumber) {
    *          myNumber = _myNumber;
@@ -56,8 +56,8 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
    * To use the type safe interface for these contracts you have to include the ABI definitions in your Typescript project and then declare these as `const`.
    *
    * ```ts title="Example"
-   * const myContractAbi = [....] as const; // ABI definitions
-   * const myContract = new web3.eth.Contract(myContractAbi, '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe');
+   * const simpleContractAbi = [....] as const; // ABI definitions
+   * const simpleContract = new web3.eth.Contract(simpleContractAbi, '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe');
    * ```
    */
   constructor(

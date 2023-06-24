@@ -2,10 +2,12 @@ import {
   sourceCode,
   sampleContractAbi,
   sampleContractBytecode2,
-  contractFileWithPath,
   sampleContractBytecode3,
+  contractFileWithPath,
   contractFile2WithPath,
-} from './smart_contracts/sample-contract';
+  childContractBytecode,
+  childContractAbi,
+} from './smart_contracts/contracts-constants';
 
 import { ExtendedContract } from '../src';
 import { Web3BaseProvider } from 'web3';
@@ -31,7 +33,7 @@ export async function testSuccessfulCompilationFromCodeOptions(
 ) {
   const contract = new ExtendedContractType({
     sourceCode,
-    contractName: 'MyContract',
+    contractName: 'SimpleContract',
   });
   expect(contract.hadFinishedCompilation).toBe(false);
   const compilationResult = await contract.compilationResult;
@@ -68,7 +70,7 @@ export async function testSuccessfulCompilationFromFileOptions(
 ) {
   const contract = new ExtendedContractType({
     path: contractFileWithPath,
-    contractName: 'MyContract',
+    contractName: 'SimpleContract',
   });
   expect(contract.hadFinishedCompilation).toBe(false);
   const compilationResult = await contract.compilationResult;
@@ -88,19 +90,19 @@ export async function testSuccessfulCompilationFromMultiFileWithOptions(
 ) {
   const contract = new ExtendedContractType({
     path: [contractFileWithPath, contractFile2WithPath],
-    contractName: 'MyContract',
+    contractName: 'ChildContract',
   });
   expect(contract.hadFinishedCompilation).toBe(false);
   const compilationResult = await contract.compilationResult;
   expect(contract.hadFinishedCompilation).toBe(true);
 
   expect(compilationResult).toMatchObject({
-    abi: sampleContractAbi,
-    bytecodeString: sampleContractBytecode3,
+    abi: childContractAbi,
+    bytecodeString: childContractBytecode,
   });
 
-  expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-  expect(contract.options.input).toEqual(sampleContractBytecode3);
+  expect(contract.options.jsonInterface).toMatchObject(childContractAbi);
+  expect(contract.options.input).toEqual(childContractBytecode);
 }
 
 export function testCompilationCauseError(

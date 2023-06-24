@@ -44,7 +44,7 @@ describe('ExtendedWeb3 as plugin', () => {
     await testSuccessfulCompilationFromFileOptions(ExtendedContractType);
   });
 
-  it('compile source code from multi file with options', async () => {
+  it('compile source code from multiple files with options', async () => {
     await testSuccessfulCompilationFromMultiFileWithOptions(
       ExtendedContractType
     );

@@ -11,7 +11,7 @@ import {
   sampleContractBytecode0,
   sampleContractBytecode1,
   contractFileWithPath,
-} from './smart_contracts/sample-contract';
+} from './smart_contracts/contracts-constants';
 
 describe('compile', () => {
   beforeAll(() => {});

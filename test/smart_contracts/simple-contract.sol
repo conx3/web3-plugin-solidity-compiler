@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MyContract2 {
+contract SimpleContract {
     uint256 public myNumber;
 
     constructor(uint256 _myNumber) {

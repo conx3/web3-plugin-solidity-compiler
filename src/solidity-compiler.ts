@@ -163,7 +163,7 @@ export class SolidityCompiler {
               if (typeof path === 'string') {
                 contractPath = path;
               } else {
-                contractPath = path?.find(
+                contractPath = Object.keys(compilationRes.data.contracts)?.find(
                   p => compilationRes[p][contractName as string]
                 ) as string;
               }

@@ -20,6 +20,7 @@ Basically, you just need to create an object of `ExtendedContract` by passing th
 
 After that, you have to call `await contract.compilationResult` to be able to wait for the compilation to finish.
 
+### Creating an instance of the `ExtendedContract` object
 
 However, there is 3 ways to create an object of `ExtendedContract`:
 - First alternative is to instantiate from the `ExtendedContract` class
@@ -59,6 +60,9 @@ However, there is 3 ways to create an object of `ExtendedContract`:
   const contract = new web3.craftsman.ExtendedContract(sourceCodeOrPath);
   ```
 
+
+### Deploying and interacting with your Contract
+
 After you have your `contract` object created, the rest is the same regardless of the alternative you chose:
 
 ```ts
@@ -83,13 +87,18 @@ const deployed = await contract
   .deploy({ arguments: [1000] })
   .send({ from: accounts[0] });
   
-// Call methods      
+// Call a method     
 const myNumber = await deployed.methods.myNumber().call();
 
-// Send transactions
-await deployed.methods.setMyNumber(100).send({ from: accounts[0] });
+// Send a transaction
+await (deployed.methods.setMyNumber(100) as any).send({ from: accounts[0] });
+
+// Call a method  
+const myNumberUpdated = await deployed.methods.myNumber().call();
 
 ```
+
+### The constructor options
 
 Note that, you can pass one of the following, as the first argument, to the extended contract contractor. (This is what you can enter to replace the variable `sourceCodeOrPath` mentioned above):
 - A string containing a Smart Contract source code
@@ -112,10 +121,23 @@ Note that, you can pass one of the following, as the first argument, to the exte
   }
   ```
 
+#### Examples for the constructor options
 
 And here is an example for passing the file path (the recommended way):
 ```ts
-const contract = new ExtendedContract('./test/smart_contracts/sample.sol');
+const contract = new ExtendedContract('./test/smart_contracts/simple-contract.sol');
+```
+
+Or as the following when you need to pass multiple files:
+```ts
+const contract = new ExtendedContract({
+    path: [
+      './test/smart_contracts/simple-contract.sol',
+      './test/smart_contracts/child-contract.sol'
+    ],
+    contractName: 'ChildContract',
+  }
+  );
 ```
 
 And here is an example for passing the solidity code in-line (not recommended):
@@ -124,7 +146,7 @@ const contract = new ExtendedContract('
   // SPDX-License-Identifier: MIT
   pragma solidity ^0.8.0;
 
-  contract MyContract {
+  contract SimpleContract {
       uint256 public myNumber;
 
       constructor(uint256 _myNumber) {
