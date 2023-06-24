@@ -34,6 +34,24 @@
     "trailingComma": "es5"
   },
   "name": "web3-plugin-craftsman",
+  "description": "web3.js plugin that allows instantiating contracts objects directly from Solidity source code",
+  "keywords": [
+    "solidity",  
+    "smart contracts",
+    "abi",
+    "bytecode",
+    "web3.js",
+    "plugin",
+    "ethereum",
+    "web3",
+    "dapp",
+    "blockchain"  
+  ],
+	"homepage": "https://github.com/conx3/web3-plugin-craftsman#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/conx3/web3-plugin-craftsman.git"
+	},
   "author": "Muhammad-Altabba",
   "module": "dist/web3-plugin-craftsman.esm.js",
   "size-limit": [

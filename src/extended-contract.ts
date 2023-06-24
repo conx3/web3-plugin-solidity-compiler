@@ -152,7 +152,7 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
       this.compilationResult = new Promise((resolve, reject) => {
         const anyName = 'contract';
         SolidityCompiler.compileSourceString(anyName, sourceCodeOrAbi)
-          .then((compilationRes) => {
+          .then(compilationRes => {
             if (compilationRes.abi && compilationRes.bytecodeString) {
               // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
               // @ts-ignore
