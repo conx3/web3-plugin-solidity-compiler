@@ -1,10 +1,9 @@
 # web3-plugin-craftsman
 
-- Allows instantiating contracts directly from Solidity source code. Instead of requiring an ABI and bytecode, you can pass the source code to ExtendedContract and it will:
+This package allows instantiating contracts directly from Solidity source code or a solidity file. So, instead of requiring an ABI and bytecode, you can pass the source code to ExtendedContract and it will:
   - Compile the solidity code.
   - Generate the ABI and bytecode (you can read them and save them)
   - Set bytecode internally, so it will be used when deploying the Smart Contract.
-- Probably, more to come :smile:
 
 ## Installation
 
@@ -28,7 +27,7 @@ However, there is 3 ways to create an object of `ExtendedContract`:
   import { ExtendedContract } from 'web3-plugin-craftsman';
 
   // Using ExtendedContract directly
-  const contract = new ExtendedContract(sourceCode);
+  const contract = new ExtendedContract(sourceCodeOrPath);
 
   // You need to set the provider only if you need to deploy or execute methods
   // You do not need it incase you only need to compile the source code and save the ABI and bytecode for later usage. 
@@ -43,7 +42,7 @@ However, there is 3 ways to create an object of `ExtendedContract`:
   // Using ExtendedWeb3
   const web3 = new ExtendedWeb3('http://localhost:8545');
 
-  const contract = new web3.eth.ExtendedContract(sourceCode);
+  const contract = new web3.eth.ExtendedContract(sourceCodeOrPath);
   ```
 
 - As a third alternative, you can use the functionality as a plugin to Web3. This is helpful if you like to using this functionality on an existing `Web3` object.
@@ -57,7 +56,7 @@ However, there is 3 ways to create an object of `ExtendedContract`:
   // Using ExtendedWeb3 as a plugin
   web3.registerPlugin(new ExtendedWeb3());
 
-  const contract = new web3.craftsman.ExtendedContract(sourceCode);
+  const contract = new web3.craftsman.ExtendedContract(sourceCodeOrPath);
   ```
 
 After you have your `contract` object created, the rest is the same regardless of the alternative you chose:
@@ -91,6 +90,56 @@ const myNumber = await deployed.methods.myNumber().call();
 await deployed.methods.setMyNumber(100).send({ from: accounts[0] });
 
 ```
+
+Note that, you can pass one of the following, as the first argument, to the extended contract contractor. (This is what you can enter to replace the variable `sourceCodeOrPath` mentioned above):
+- A string containing a Smart Contract source code
+- A string containing a Smart Contract file path
+- An object containing the source code and the Smart Contract name:
+  ```ts
+  {
+    sourceCode: string;
+    // The name must be specified if there are multiple contracts
+    contractName: string;
+  }
+  ```
+- An object containing the path of the file (path/file.sol), or the paths, and the Smart Contract name:
+  ```ts
+  {
+    // Pass an array, if the contract inherits from other contracts that exist at other files
+    path: string | string[];   
+    // The name must be specified if there are multiple contracts 
+    contractName: string;
+  }
+  ```
+
+
+And here is an example for passing the file path (the recommended way):
+```ts
+const contract = new ExtendedContract('./test/smart_contracts/sample.sol');
+```
+
+And here is an example for passing the solidity code in-line (not recommended):
+```ts
+const contract = new ExtendedContract('
+  // SPDX-License-Identifier: MIT
+  pragma solidity ^0.8.0;
+
+  contract MyContract {
+      uint256 public myNumber;
+
+      constructor(uint256 _myNumber) {
+          myNumber = _myNumber;
+      }
+
+      function setMyNumber(uint256 _myNumber) public {
+          myNumber = _myNumber;
+      }
+  }
+'
+);
+```
+
+
 
 ## Features
 

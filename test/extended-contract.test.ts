@@ -7,7 +7,8 @@ import {
   testSuccessfulCompilation,
   testCompilationCauseError,
   testDeploymentAndCalls,
-} from './extended-contract-helpers';
+  testSuccessfulCompilationFromFile,
+} from './extended-contract-test-helpers';
 
 describe('ExtendedContract', () => {
   let web3: Web3;
@@ -23,6 +24,10 @@ describe('ExtendedContract', () => {
 
   it('compile source code', async () => {
     await testSuccessfulCompilation(ExtendedContractType);
+  });
+
+  it('compile source code from file', async () => {
+    await testSuccessfulCompilationFromFile(ExtendedContractType);
   });
 
   it('raise error while compiling an invalid code', async () => {

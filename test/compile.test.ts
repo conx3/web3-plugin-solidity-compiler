@@ -9,15 +9,15 @@ import {
   contractName,
   sampleContractAbi,
   sampleContractBytecode0,
-  bytecodeStringBySource1,
+  sampleContractBytecode1,
+  contractFileWithPath,
 } from './smart_contracts/sample-contract';
 
 describe('compile', () => {
-  const solidityCompiler = new SolidityCompiler();
   beforeAll(() => {});
 
   it('compile source code', async () => {
-    const res = await solidityCompiler.compileSourceString(
+    const res = await SolidityCompiler.compileSourceString(
       fileName,
       sourceCode
     );
@@ -30,11 +30,11 @@ describe('compile', () => {
   });
 
   it('compile file', async () => {
-    const fileWithPath = './test/smart_contracts/' + fileName;
-    const res = await solidityCompiler.compileSol(fileWithPath);
+    const fileWithPath = contractFileWithPath;
+    const res = await SolidityCompiler.compileSol(fileWithPath);
 
     expect(res[fileWithPath][contractName].bytecodeString).toBe(
-      bytecodeStringBySource1
+      sampleContractBytecode1
     );
     expect(res[fileWithPath][contractName].abi).toEqual(sampleContractAbi);
     expect(res[fileWithPath][contractName]).toEqual(res[contractName]);

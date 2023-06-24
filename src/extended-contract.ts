@@ -7,7 +7,13 @@ import {
   Web3Context,
   eth,
 } from 'web3';
-import { AbiAndBytecode, SolidityCompiler } from './solidity-compiler';
+import {
+  AbiAndBytecode,
+  SolidityCompiler,
+  SourceCodeAsText,
+  SourceCodeInFile,
+  SourceCodeOptions,
+} from './solidity-compiler';
 
 export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
   public hadFinishedCompilation?: boolean;
@@ -89,12 +95,12 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
   );
 
   constructor(
-    sourceCode: string,
+    sourceCodeOptions: SourceCodeOptions,
     context?: eth.contract.Web3ContractContext | Web3Context,
     returnFormat?: DataFormat
   );
   constructor(
-    sourceCode: string,
+    sourceCodeOptions: SourceCodeOptions,
     address?: Address,
     contextOrReturnFormat?:
       | eth.contract.Web3ContractContext
@@ -103,7 +109,7 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
     returnFormat?: DataFormat
   );
   constructor(
-    sourceCode: string,
+    sourceCodeOptions: SourceCodeOptions,
     options?: ContractInitOptions,
     contextOrReturnFormat?:
       | eth.contract.Web3ContractContext
@@ -112,7 +118,7 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
     returnFormat?: DataFormat
   );
   constructor(
-    sourceCode: string,
+    sourceCodeOptions: SourceCodeOptions,
     address: Address | undefined,
     options: ContractInitOptions,
     contextOrReturnFormat?:
@@ -123,7 +129,7 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
   );
 
   public constructor(
-    sourceCodeOrAbi: string | Abi,
+    sourceCodeOptionsOrAbi: SourceCodeOptions | Abi,
     addressOrOptionsOrContext?:
       | Address
       | ContractInitOptions
@@ -140,7 +146,11 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
       | DataFormat,
     returnFormat?: DataFormat
   ) {
-    if (typeof sourceCodeOrAbi === 'string') {
+    if (
+      typeof sourceCodeOptionsOrAbi === 'string' ||
+      (sourceCodeOptionsOrAbi as SourceCodeAsText).sourceCode ||
+      (sourceCodeOptionsOrAbi as SourceCodeInFile).path
+    ) {
       super(
         [] as any,
         addressOrOptionsOrContext as any,
@@ -148,38 +158,13 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
         contextOrReturnFormat,
         returnFormat
       );
-      this.hadFinishedCompilation = false;
-      this.compilationResult = new Promise((resolve, reject) => {
-        const anyName = 'contract';
-        SolidityCompiler.compileSourceString(anyName, sourceCodeOrAbi)
-          .then(compilationRes => {
-            if (compilationRes.abi && compilationRes.bytecodeString) {
-              // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
-              // @ts-ignore
-              this.options.jsonInterface = compilationRes.abi;
-              (this.options as { input: string }).input =
-                compilationRes.bytecodeString;
-              this.hadFinishedCompilation = true;
-              resolve({
-                abi: compilationRes.abi,
-                bytecodeString: compilationRes.bytecodeString,
-              });
-            } else {
-              this.hadFinishedCompilation = true;
-              reject(
-                new Error(
-                  'Something when wrong. The reason could be that you have multiple smart contracts provided'
-                )
-              );
-            }
-          })
-          .catch((e: Error) => {
-            reject(e);
-          });
-      });
+      SolidityCompiler.compileAndFillProperties(
+        this,
+        sourceCodeOptionsOrAbi as SourceCodeOptions
+      );
     } else {
       super(
-        sourceCodeOrAbi,
+        sourceCodeOptionsOrAbi as Abi,
         addressOrOptionsOrContext as any,
         optionsOrContextOrReturnFormat as any,
         contextOrReturnFormat,

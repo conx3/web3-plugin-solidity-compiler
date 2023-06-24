@@ -10,7 +10,7 @@ import {
   testSuccessfulCompilation,
   testCompilationCauseError,
   testDeploymentAndCalls,
-} from '../test/extended-contract-helpers';
+} from '../test/extended-contract-test-helpers';
 
 describe('ExtendedWeb3 as plugin', () => {
   let web3: Web3;

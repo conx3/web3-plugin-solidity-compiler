@@ -7,7 +7,13 @@ import Web3, {
   Web3Context,
   Web3EthInterface,
 } from 'web3';
-import { AbiAndBytecode, SolidityCompiler } from './solidity-compiler';
+import {
+  AbiAndBytecode,
+  SolidityCompiler,
+  SourceCodeAsText,
+  SourceCodeInFile,
+  SourceCodeOptions,
+} from './solidity-compiler';
 import { ExtendedContract } from './extended-contract';
 
 export class ExtendedWeb3 extends Web3 {
@@ -49,55 +55,39 @@ export class ExtendedWeb3 extends Web3 {
         address: Address,
         options: ContractInitOptions
       );
-      public constructor(sourceCode: string);
-      public constructor(sourceCode: string, address: Address);
-      public constructor(sourceCode: string, options: ContractInitOptions);
+      public constructor(sourceCodeOptions: SourceCodeOptions);
       public constructor(
-        sourceCode: string,
+        sourceCodeOptions: SourceCodeOptions,
+        address: Address
+      );
+      public constructor(
+        sourceCodeOptions: SourceCodeOptions,
+        options: ContractInitOptions
+      );
+      public constructor(
+        sourceCodeOptions: SourceCodeOptions,
         address: Address,
         options: ContractInitOptions
       );
       public constructor(
-        jsonInterfaceOrSourceCode: Abi | string,
+        sourceCodeOptionsOrAbi: SourceCodeOptions | Abi,
         addressOrOptions?: Address | ContractInitOptions,
         options?: ContractInitOptions
       ) {
-        if (typeof jsonInterfaceOrSourceCode === 'string') {
+        if (
+          typeof sourceCodeOptionsOrAbi === 'string' ||
+          (sourceCodeOptionsOrAbi as SourceCodeAsText).sourceCode ||
+          (sourceCodeOptionsOrAbi as SourceCodeInFile).path
+        ) {
           super([] as any, addressOrOptions as any, options);
-          this.hadFinishedCompilation = false;
-          this.compilationResult = new Promise((resolve, reject) => {
-            const sourceCode = jsonInterfaceOrSourceCode;
-            const anyName = 'contract';
 
-            SolidityCompiler.compileSourceString(anyName, sourceCode)
-              .then(compilationRes => {
-                if (compilationRes.abi && compilationRes.bytecodeString) {
-                  // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
-                  // @ts-ignore
-                  this.options.jsonInterface = compilationRes.abi;
-                  (this.options as { input: string }).input =
-                    compilationRes.bytecodeString;
-                  resolve({
-                    abi: compilationRes.abi,
-                    bytecodeString: compilationRes.bytecodeString,
-                  });
-                } else {
-                  reject(
-                    new Error(
-                      'Something when wrong. The reason could be that you have multiple smart contracts provided'
-                    )
-                  );
-                }
-                this.hadFinishedCompilation = true;
-              })
-              .catch((e: Error) => {
-                this.hadFinishedCompilation = true;
-                reject(e);
-              });
-          });
+          SolidityCompiler.compileAndFillProperties(
+            this,
+            sourceCodeOptionsOrAbi as SourceCodeOptions
+          );
         } else {
-          const jsonInterface = jsonInterfaceOrSourceCode;
-          super(jsonInterface, addressOrOptions as any, options);
+          const jsonInterface = sourceCodeOptionsOrAbi;
+          super(jsonInterface as Abi, addressOrOptions as any, options);
         }
         this.pluginNamespace = 'extendedContract';
       }
