@@ -10,14 +10,13 @@ import Web3, {
 import { AbiAndBytecode, SolidityCompiler } from './solidity-compiler';
 import { ExtendedContract } from './extended-contract';
 
-export interface ExtendedWeb3EthInterface extends Web3EthInterface {
-  ExtendedContract: typeof ExtendedContract;
-}
 
 export class ExtendedWeb3 extends Web3 {
-  public readonly pluginNamespace = 'extendedWeb3';
+  public readonly pluginNamespace = 'craftsman';
 
   public eth: ExtendedWeb3EthInterface;
+
+  public readonly ExtendedContract: typeof ExtendedContract;
 
   // Ignore the typescript error: "A 'super' call must be the first statement in the constructor when a class contains initialized properties, parameter properties, or private identifiers.""
   // @ts-ignore
@@ -25,7 +24,7 @@ export class ExtendedWeb3 extends Web3 {
     // To not receive the following warring in case of no provided provided to this instance
     // "NOTE: web3.js is running without provider. You need to pass a provider in order to interact with the network!"
     const warn = console.warn;
-    console.warn = function() {};
+    console.warn = function () {};
     super(provider);
     console.warn = warn;
 
@@ -72,7 +71,7 @@ export class ExtendedWeb3 extends Web3 {
             const anyName = 'contract';
 
             SolidityCompiler.compileSourceString(anyName, sourceCode)
-              .then(compilationRes => {
+              .then((compilationRes) => {
                 if (compilationRes.abi && compilationRes.bytecodeString) {
                   // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
                   // @ts-ignore
@@ -105,8 +104,11 @@ export class ExtendedWeb3 extends Web3 {
       }
     }
 
-    (this as any).ExtendedContract = ExtendedContractBuilder;
+    this.ExtendedContract = ExtendedContractBuilder;
     this.eth.ExtendedContract = ExtendedContractBuilder;
+
+    // To enable using `new ExtendedWeb3().craftsman.ExtendedContract`:
+    this.craftsman = this;
   }
 
   public link(parentContext: Web3Context) {
@@ -127,11 +129,14 @@ export class ExtendedWeb3 extends Web3 {
   }
 }
 
+export interface ExtendedWeb3EthInterface extends Web3EthInterface {
+  ExtendedContract: typeof ExtendedContract;
+}
+
 // Module Augmentation
 declare module 'web3' {
   interface Web3 {
-    extendedWeb3: {
-      ExtendedContract: typeof ExtendedContract;
-    };
+    // The Extended Contract will be available on both `web3.craftsman.ExtendedContract` and `web3.craftsman.eth.ExtendedContract`.
+    craftsman: ExtendedWeb3;
   }
 }

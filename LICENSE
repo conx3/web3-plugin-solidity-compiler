@@ -1,17 +1,15 @@
-CC BY-NC-ND License
+LGPL-3.0 License
 
-This software is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License (CC BY-NC-ND 4.0). To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/
-
-However, you are free to:
-
-- Share: copy and redistribute the material in any medium or format, as long as you give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-- Commercial and Non-commercial: You use the material for Commercial and Non-commercial purposes.
-
-Under the following terms:
+This program, along with any associated libraries, is free software; you can redistribute it and/or modify it under the terms of the Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. This is in addition to the following additional terms:
 
 - Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-- No derivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+- No derivatives — If you remix, transform, or copy in whole or in part the material, you may not distribute the modified material without a written consent from the owner.
+
 
 Disclaimer of Warranty and Limitation of Liability:
 
 The software is provided "AS IS," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the creators or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+
+
+You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <https://www.gnu.org/licenses/lgpl-3.0.txt>.
+

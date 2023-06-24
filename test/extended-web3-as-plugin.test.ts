@@ -1,5 +1,7 @@
 import './polyfills';
 
+import { Web3 } from 'web3';
+
 import { ExtendedWeb3 } from '../src/extended-web3';
 
 import { ExtendedContract } from '../src';
@@ -9,12 +11,13 @@ import {
   testDeploymentAndCalls,
 } from './extended-contract-helpers';
 
-describe('ExtendedWeb3', () => {
-  let web3: ExtendedWeb3;
+describe('ExtendedWeb3 as plugin', () => {
+  let web3: Web3;
   let ExtendedContractType: typeof ExtendedContract;
   let fromAccount: string;
   beforeAll(async () => {
-    web3 = new ExtendedWeb3('http://localhost:8545');
+    web3 = new Web3('http://localhost:8545');
+    web3.registerPlugin(new ExtendedWeb3());
     ExtendedContractType = web3.craftsman.ExtendedContract;
 
     const accounts = await web3.eth.getAccounts();

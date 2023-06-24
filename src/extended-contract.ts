@@ -10,8 +10,6 @@ import {
 import { AbiAndBytecode, SolidityCompiler } from './solidity-compiler';
 
 export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
-  public readonly pluginNamespace: string;
-
   public hadFinishedCompilation?: boolean;
   public compilationResult?: Promise<AbiAndBytecode>;
 
@@ -152,7 +150,7 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
       );
       this.hadFinishedCompilation = false;
       this.compilationResult = new Promise((resolve, reject) => {
-        const anyName = 'anyfilename';
+        const anyName = 'contract';
         SolidityCompiler.compileSourceString(anyName, sourceCodeOrAbi)
           .then((compilationRes) => {
             if (compilationRes.abi && compilationRes.bytecodeString) {
@@ -196,14 +194,5 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
         );
       });
     }
-
-    this.pluginNamespace = 'extendedContract';
-  }
-}
-
-// Module Augmentation
-declare module 'web3' {
-  interface Web3Context {
-    extendedContract: ExtendedContract<[]>;
   }
 }

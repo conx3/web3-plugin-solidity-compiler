@@ -4,65 +4,37 @@ import { ExtendedContract } from '../src/extended-contract';
 import { Web3 } from 'web3';
 
 import {
-  sourceCode,
-  sampleContractAbi,
-  sampleContractBytecode3,
-} from './smart_contracts/sample-contract';
+  testSuccessfulCompilation,
+  testCompilationCauseError,
+  testDeploymentAndCalls,
+} from './extended-contract-helpers';
 
 describe('ExtendedContract', () => {
   let web3: Web3;
-  beforeAll(() => {
+  let ExtendedContractType: typeof ExtendedContract;
+  let fromAccount: string;
+  beforeAll(async () => {
     web3 = new Web3('http://localhost:8545');
+    ExtendedContractType = ExtendedContract;
+
+    const accounts = await web3.eth.getAccounts();
+    fromAccount = accounts[0];
   });
 
   it('compile source code', async () => {
-    const contract = new ExtendedContract(sourceCode);
-    expect(contract.hadFinishedCompilation).toBe(false);
-    const compilationResult = await contract.compilationResult;
-    expect(contract.hadFinishedCompilation).toBe(true);
+    await testSuccessfulCompilation(ExtendedContractType);
+  });
 
-    expect(compilationResult).toMatchObject({
-      abi: sampleContractAbi,
-      bytecodeString: sampleContractBytecode3,
-    });
-
-    expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-    expect(contract.options.input).toEqual(sampleContractBytecode3);
+  it('raise error while compiling an invalid code', async () => {
+    await testCompilationCauseError(ExtendedContractType);
   });
 
   // This test case can be unskipped if there is a node running
   it.skip('deploy contract', async () => {
-    const contract = new ExtendedContract(sourceCode);
-    await contract.compilationResult;
-
-    const accounts = await web3.eth.getAccounts();
-    const contractDeployed = await contract
-      .deploy({
-        // @ts-expect-error
-        arguments: [1000],
-      })
-      .send({
-        from: accounts[0],
-        gas: '1000000',
-        // other transaction's params
-      });
-
-    console.log('contractDeployed', contractDeployed.options.address);
-
-    const myNumber = await contractDeployed.methods.myNumber().call();
-    expect(myNumber).toBe(1000);
-
-    await (contractDeployed.methods.setMyNumber as any)(100).send({
-      from: accounts[0],
-    });
-    const myNumberModifled = await contractDeployed.methods.myNumber().call();
-    expect(myNumberModifled).toBe(100);
-  });
-
-  it('raise error while compiling an invalid code', async () => {
-    const contract = new ExtendedContract(sourceCode + ' invalid code');
-
-    const compilationResult = contract.compilationResult;
-    expect(compilationResult).rejects.toThrow('Failed parsing imports');
+    await testDeploymentAndCalls(
+      ExtendedContractType,
+      fromAccount,
+      web3.provider
+    );
   });
 });
