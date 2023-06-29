@@ -16,6 +16,8 @@ import {
 } from './solidity-compiler';
 
 export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
+  public contractName?: string;
+
   public hadFinishedCompilation?: boolean;
   public compilationResult?: Promise<AbiAndBytecode>;
 
@@ -179,5 +181,9 @@ export class ExtendedContract<Abi extends ContractAbi> extends Contract<Abi> {
         );
       });
     }
+  }
+
+  public async saveCompilationResult(filePath: string) {
+    await SolidityCompiler.saveContractCompilation(filePath, this);
   }
 }

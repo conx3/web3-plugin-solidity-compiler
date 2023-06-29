@@ -114,6 +114,40 @@ export function testCompilationCauseError(
   expect(compilationResult).rejects.toThrow('Failed parsing imports');
 }
 
+export async function testSaveCompilationResultFromSolidityCode(
+  ExtendedContractType: typeof ExtendedContract
+) {
+  const contract = new ExtendedContractType(sourceCode);
+
+  const filePath = '../test/compilation_output/simple-contract-custom-file.ts';
+
+  await contract.saveCompilationResult(filePath);
+
+  const { SimpleContractAbi, SimpleContractBytecode } = require(filePath);
+
+  expect(SimpleContractAbi).toEqual(contract.options.jsonInterface);
+  expect(SimpleContractBytecode).toEqual(contract.options.input);
+}
+
+export async function testSaveCompilationResultFromSolidityFile(
+  ExtendedContractType: typeof ExtendedContract
+) {
+  const contract = new ExtendedContractType({
+    path: [contractFileWithPath, contractFile2WithPath],
+    contractName: 'ChildContract',
+  });
+
+  await contract.saveCompilationResult('../test/compilation_output');
+
+  const {
+    ChildContractAbi,
+    ChildContractBytecode,
+  } = require('../test/compilation_output/ChildContract-artifacts.ts');
+
+  expect(ChildContractAbi).toEqual(contract.options.jsonInterface);
+  expect(ChildContractBytecode).toEqual(contract.options.input);
+}
+
 export async function testDeploymentAndCalls(
   ExtendedContractType: typeof ExtendedContract,
   fromAccount: string,

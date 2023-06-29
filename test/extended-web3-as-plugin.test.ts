@@ -12,6 +12,8 @@ import {
   testSuccessfulCompilationFromFileOptions,
   testSuccessfulCompilationFromCodeOptions,
   testSuccessfulCompilationFromMultiFileWithOptions,
+  testSaveCompilationResultFromSolidityCode,
+  testSaveCompilationResultFromSolidityFile,
 } from './extended-contract-test-helpers';
 import { testSuccessfulCompilationFromFile } from './extended-contract-test-helpers';
 
@@ -52,6 +54,14 @@ describe('ExtendedWeb3 as plugin', () => {
 
   it('raise error while compiling an invalid code', async () => {
     await testCompilationCauseError(ExtendedContractType);
+  });
+
+  it('save compilation result from solidity code', async () => {
+    await testSaveCompilationResultFromSolidityCode(ExtendedContractType);
+  });
+
+  it('save compilation result from solidity file', async () => {
+    await testSaveCompilationResultFromSolidityFile(ExtendedContractType);
   });
 
   // This test case can be unskipped if there is a node running

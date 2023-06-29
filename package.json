@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "license": "LGPL-3.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -36,7 +36,7 @@
   "name": "web3-plugin-craftsman",
   "description": "web3.js plugin that allows instantiating contracts objects directly from Solidity source code",
   "keywords": [
-    "solidity",  
+    "solidity",
     "smart contracts",
     "abi",
     "bytecode",
@@ -45,13 +45,13 @@
     "ethereum",
     "web3",
     "dapp",
-    "blockchain"  
+    "blockchain"
   ],
-	"homepage": "https://github.com/conx3/web3-plugin-craftsman#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/conx3/web3-plugin-craftsman.git"
-	},
+  "homepage": "https://github.com/conx3/web3-plugin-craftsman#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conx3/web3-plugin-craftsman.git"
+  },
   "author": "Muhammad-Altabba",
   "module": "dist/web3-plugin-craftsman.esm.js",
   "size-limit": [
@@ -73,7 +73,7 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.5.3",
     "typescript": "^4.9.3",
-    "web3-plugin-craftsman": "0.1.0-alpha.2"
+    "web3-plugin-craftsman": "^0.1.0-alpha.4"
   },
   "dependencies": {
     "solc-typed-ast": "^15.0.0",

@@ -42,6 +42,8 @@ export class ExtendedWeb3 extends Web3 {
       // TODO: probably refactor to remove this property. Because this class is not supposed to be a plugin.
       public readonly pluginNamespace: string;
 
+      public contractName?: string;
+
       // The following 2 properties and their logic is duplicated and copied from ExtendedContract.
       // TODO: consider refactoring to use the same code written at ExtendedContract.
       public hadFinishedCompilation?: boolean;
@@ -90,6 +92,10 @@ export class ExtendedWeb3 extends Web3 {
           super(jsonInterface as Abi, addressOrOptions as any, options);
         }
         this.pluginNamespace = 'extendedContract';
+      }
+
+      public async saveCompilationResult(filePath: string) {
+        await SolidityCompiler.saveContractCompilation(filePath, this);
       }
     }
 

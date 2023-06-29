@@ -7,9 +7,16 @@ import {
   compileSourceString,
 } from 'solc-typed-ast';
 
+import fs from 'fs';
+import path from 'path';
+
 import { ExtendedContract } from './extended-contract';
 
-export type AbiAndBytecode = { abi: ContractAbi; bytecodeString: string };
+export type AbiAndBytecode = {
+  abi: ContractAbi;
+  bytecodeString: string;
+  contractName: string;
+};
 
 export type SourceCodeAsText = {
   sourceCode: string;
@@ -31,16 +38,17 @@ export type ScaffoldedCompileResult = CompileResult &
     };
   };
 
-const pathRegex = /^([a-zA-Z]+:?)?(\/?[^\r\n\s/:]+)*\/?(?:([^\r\n\s/:]+(?:\.\w+)?)?)$/;
+const pathRegex =
+  /^([a-zA-Z]+:?)?(\/?[^\r\n\s/:]+)*\/?(?:([^\r\n\s/:]+(?:\.\w+)?)?)$/;
 
 export class SolidityCompiler {
   private static scaffoldCompiledContract(
     result: CompileResult
   ): ScaffoldedCompileResult {
     let scaffoldedRes = result as ScaffoldedCompileResult;
-    Object.keys(result.data.contracts).forEach(fileName => {
+    Object.keys(result.data.contracts).forEach((fileName) => {
       scaffoldedRes[fileName] = {} as any;
-      Object.keys(result.data.contracts[fileName]).forEach(contractName => {
+      Object.keys(result.data.contracts[fileName]).forEach((contractName) => {
         const contract: {
           abi: ContractAbi;
           evm: { bytecode: { object: string } };
@@ -49,8 +57,11 @@ export class SolidityCompiler {
         const bytecodeString = contract.evm.bytecode.object;
         const abi = contract.abi;
 
-        scaffoldedRes[fileName][contractName] = { abi, bytecodeString };
-        // scaffoldedRes[contractName] = { abi, bytecodeString } as any;
+        scaffoldedRes[fileName][contractName] = {
+          abi,
+          bytecodeString,
+          contractName,
+        };
       });
       if (Object.keys(result.data.contracts[fileName]).length === 1) {
         const contract = scaffoldedRes[fileName][
@@ -63,14 +74,13 @@ export class SolidityCompiler {
       }
     });
     if (Object.keys(result.data.contracts).length === 1) {
-      const contract = (scaffoldedRes[
-        Object.keys(result.data.contracts)[0]
-      ] as {
+      const contract = scaffoldedRes[Object.keys(result.data.contracts)[0]] as {
         [index: string]: {
           abi: ContractAbi;
           bytecodeString: string;
+          contractName: string;
         };
-      }) as any;
+      } as any;
       (scaffoldedRes as any) = { ...scaffoldedRes, ...contract };
     }
     return scaffoldedRes;
@@ -155,7 +165,7 @@ export class SolidityCompiler {
         .contractName;
       if (path) {
         SolidityCompiler.compileSol(path as any)
-          .then(compilationRes => {
+          .then((compilationRes) => {
             let abi;
             let bytecodeString;
             if (contractName) {
@@ -164,28 +174,33 @@ export class SolidityCompiler {
                 contractPath = path;
               } else {
                 contractPath = Object.keys(compilationRes.data.contracts)?.find(
-                  p => compilationRes[p][contractName as string]
+                  (p) => compilationRes[p][contractName as string]
                 ) as string;
               }
               abi = compilationRes[contractPath][contractName].abi;
               bytecodeString =
                 compilationRes[contractPath][contractName].bytecodeString;
             } else if (compilationRes.abi && compilationRes.bytecodeString) {
-              // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
               abi = compilationRes.abi;
               bytecodeString = compilationRes.bytecodeString;
+              contractName = compilationRes.contractName;
             }
-            contract.hadFinishedCompilation = true;
-            if (abi && bytecodeString) {
-              (contract.options as {
-                jsonInterface: ContractAbi;
-              }).jsonInterface = abi;
+            if (abi && bytecodeString && contractName) {
+              (
+                contract.options as {
+                  jsonInterface: ContractAbi;
+                }
+              ).jsonInterface = abi;
               (contract.options as { input: string }).input = bytecodeString;
+              contract.contractName = contractName;
+              contract.hadFinishedCompilation = true;
               resolve({
                 abi,
                 bytecodeString,
+                contractName,
               });
             } else {
+              contract.hadFinishedCompilation = true;
               reject(
                 new Error(
                   'Something when wrong. The reason could be that you have provided the code for multiple smart contracts'
@@ -199,17 +214,20 @@ export class SolidityCompiler {
       } else if (contractSourceCode) {
         let fileName = 'contract';
         SolidityCompiler.compileSourceString(fileName, contractSourceCode)
-          .then(compilationRes => {
+          .then((compilationRes) => {
             if (compilationRes.abi && compilationRes.bytecodeString) {
               // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
               // @ts-ignore
               contract.options.jsonInterface = compilationRes.abi;
               (contract.options as { input: string }).input =
                 compilationRes.bytecodeString;
+              contractName = compilationRes.contractName;
+              contract.contractName = contractName;
               contract.hadFinishedCompilation = true;
               resolve({
                 abi: compilationRes.abi,
                 bytecodeString: compilationRes.bytecodeString,
+                contractName,
               });
             } else {
               contract.hadFinishedCompilation = true;
@@ -229,5 +247,68 @@ export class SolidityCompiler {
         );
       }
     });
+  }
+
+  public static async saveContractCompilation<Abi extends ContractAbi>(
+    filePath: string,
+    contract: ExtendedContract<Abi>
+  ) {
+    if (contract.compilationResult) {
+      await contract.compilationResult;
+    }
+    // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
+    // @ts-ignore
+    const abi = contract.options.jsonInterface;
+    if (abi) {
+      SolidityCompiler.saveCompilationResult(filePath, {
+        abi,
+        bytecodeString:
+          contract.options.input instanceof Uint8Array
+            ? new TextDecoder().decode(contract.options.input)
+            : contract.options.input ?? '',
+        contractName: contract.contractName ?? '',
+      });
+    }
+  }
+
+  public static async saveCompilationResult(
+    filePath: string,
+    compilationResult: AbiAndBytecode
+  ) {
+    const fileContent = `// This file has been generated by:
+//	"web3-plugin-craftsman" (https://github.com/conx3/web3-plugin-craftsman)
+
+export const ${compilationResult.contractName}Abi = ${JSON.stringify(
+      compilationResult.abi,
+      undefined,
+      2
+    )
+      .replace(/"([^"]+)":/g, '$1:')
+      .replace(/"([^"]*)"/g, "'$1'")} as const;
+
+export const ${compilationResult.contractName}Bytecode = '${
+      compilationResult.bytecodeString
+    }';\n`;
+
+    // Write the ABI and Bytecode to the file system
+    let contractPath;
+    if (
+      filePath.endsWith('/') ||
+      filePath.endsWith('\\') ||
+      (!filePath.endsWith('.ts') && !filePath.endsWith('.js'))
+    ) {
+      contractPath = path.join(
+        __dirname,
+        filePath,
+        compilationResult.contractName + '-artifacts.ts'
+      );
+    } else {
+      contractPath = path.join(__dirname, filePath);
+    }
+    const dirname = path.dirname(contractPath);
+    if (!(await fs.existsSync(dirname))) {
+      await fs.mkdirSync(dirname, { recursive: true });
+    }
+    await fs.writeFileSync(contractPath, fileContent, 'utf8');
   }
 }
