@@ -1,6 +1,6 @@
 # web3.js Plugin: web3-plugin-craftsman
 
-This package is a plugin for web3.js version 4. And it allows instantiating contracts directly from Solidity source code or a solidity file. So, instead of requiring an ABI and bytecode, you can pass the source code, or the file path, to ExtendedContract and then use it as you would use a normal web3.js contract object.
+The `web3-plugin-craftsman` package is a plugin for web3.js version 4. And it allows instantiating contracts directly from Solidity source code or a solidity file. So, instead of requiring the Bytecode from compiling the smart contract somewhere, you can pass the source code, or the file path, to `ExtendedContract` and then use it as you would use a normal web3.js contract object. And you can also write the generated contract's ABI and Bytecode to a TypeScript, or a JavaScript,  file that is compatible and easily readable by a normal `web3.js` `Contract`.
 
 ## Features
 
@@ -108,16 +108,20 @@ You can detect if the compilation had finished by checking the boolean `contract
 ### Deploying and interacting with your Contract
 
 ```ts
+// get the accounts provided by your Ethereum node (like Ganache). 
+const accounts = await web3.eth.getAccounts();
+fromAccount = accounts[0];
+
 // Deploy contract
 const deployed = await contract
   .deploy({ arguments: [1000] })
-  .send({ from: accounts[0] });
+  .send({ from: fromAccount });
 
 // Call a method
 const myNumber = await deployed.methods.myNumber().call();
 
 // Send a transaction
-await(deployed.methods.setMyNumber(100) as any).send({ from: accounts[0] });
+await(deployed.methods.setMyNumber(100) as any).send({ from: fromAccount });
 
 // Call a method
 const myNumberUpdated = await deployed.methods.myNumber().call();
@@ -290,3 +294,8 @@ And if the error persist, you may open an issue at: https://github.com/ConsenSys
 ---
 
 If you like to contribute to the development of this package, you may check the [CONTRIBUTION.md](CONTRIBUTION.md) file.
+
+## Tutorials
+
+If you are new in the space and would like to follow a tutorial. Here is one: 
+[Interacting with Ethereum Smart Contracts, Directly from Solidity Source Code`](https://medium.com/dapps-decentralized-apps-development/interacting-with-ethereum-smart-contracts-directly-from-solidity-source-code-9caf55457eb8)
