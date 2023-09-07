@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "license": "LGPL-3.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -73,10 +73,13 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.5.3",
     "typescript": "^4.9.3",
-    "web3-plugin-craftsman": "^0.1.0-alpha.4"
+    "web3-plugin-craftsman": "^0.1.0-alpha.5"
   },
   "dependencies": {
-    "solc-typed-ast": "^15.0.0",
-    "web3": "4.0.2-dev.af57eae.0"
+    "solc-typed-ast": "^16.1.0",
+    "web3": "^4.1.1"
+  },
+  "resolutions": {
+    "solc-typed-ast": "^16.1.0"
   }
 }

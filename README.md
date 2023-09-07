@@ -80,8 +80,8 @@ After you have your `contract` object created, the rest is the same regardless o
 You need to wait for the compilation to finish before you can go further. This is a one call that you need to `await` as below:
 
 ```ts
-// ... after you initialized the contract using one of the 3 alternatives above
-// ... the rest is the same regardless of how you had initialized you contract object
+// Note: After initializing the contract using one of the 3 alternatives
+//  mentioned above, the rest is the same regardless of the initialization.
 
 // Wait for the contract compilation and handle compilation errors if any
 try {
@@ -92,10 +92,11 @@ try {
   //     bytecodeString: string,
   //     contractName: string,
   // }
-  // Note: if you did not provide a source code or a file to the constructor,
-  //  the compilationResult will be `undefined`. This might be useful to know
-  //  that your contract does not need to be waited for compilation.
-  //  But that would als means you need to provide the ABI and the bytecode manually.
+  // Note: if you did not provide a source code or a file to
+  //  the constructor, the compilationResult will be `undefined`. 
+  //  This might be useful to know that your contract does not need
+  //  to be waited for compilation. But that would also mean you need
+  //  to provide the ABI and the bytecode manually.
 } catch (e) {
   console.log(e);
 }
@@ -121,7 +122,10 @@ const deployed = await contract
 const myNumber = await deployed.methods.myNumber().call();
 
 // Send a transaction
-await(deployed.methods.setMyNumber(100) as any).send({ from: fromAccount });
+await deployed.methods.setMyNumber(100).send({ from: fromAccount });
+// If you are using TypeScript you need to ask similar to the following:
+//  await(deployed.methods.setMyNumber(100) as any)
+//    .send({ from: fromAccount });
 
 // Call a method
 const myNumberUpdated = await deployed.methods.myNumber().call();
@@ -144,7 +148,8 @@ Note that, you can pass one of the following, as the first argument, to the exte
 - An object containing the path of the file (path/file.sol), or the paths, and the Smart Contract name:
   ```ts
   {
-    // Pass an array, if the contract inherits from other contracts that exist at other files
+    // Pass an array, if the contract inherits from other contracts 
+    //  that exist at other files
     path: string | string[];
     // The name must be specified if there are multiple contracts
     contractName: string;
@@ -178,7 +183,7 @@ And here is an example for passing the solidity code in-line (not recommended):
 ```ts
 const contract = new ExtendedContract('
   // SPDX-License-Identifier: MIT
-  pragma solidity ^0.8.0;
+  pragma solidity 0.8.0;
 
   contract SimpleContract {
       uint256 public myNumber;
@@ -268,7 +273,8 @@ import {
   SimpleContractAbi,
   SimpleContractBytecode,
 } from '../compilation_output_dir/SimpleContract-artifacts.ts';
-// you use those constants when interacting with your smart contract object, as usual, according to web3.js documentation (https://docs.web3js.org/)
+// you use those constants when interacting with your smart contract object, 
+//  as usual, according to web3.js documentation (https://docs.web3js.org/)
 ```
 
 ## Contributing
@@ -297,5 +303,5 @@ If you like to contribute to the development of this package, you may check the 
 
 ## Tutorials
 
-If you are new in the space and would like to follow a tutorial. Here is one: 
+If you are new in the space and would like to follow a tutorial, here is one: 
 [Interacting with Ethereum Smart Contracts, Directly from Solidity Source Code`](https://medium.com/dapps-decentralized-apps-development/interacting-with-ethereum-smart-contracts-directly-from-solidity-source-code-9caf55457eb8)

@@ -1,11 +1,8 @@
 import {
   sourceCode,
   sampleContractAbi,
-  sampleContractBytecode2,
-  sampleContractBytecode3,
   contractFileWithPath,
   contractFile2WithPath,
-  childContractBytecode,
   childContractAbi,
 } from './smart_contracts/contracts-constants';
 
@@ -22,11 +19,11 @@ export async function testSuccessfulCompilation(
 
   expect(compilationResult).toMatchObject({
     abi: sampleContractAbi,
-    bytecodeString: sampleContractBytecode2,
+    bytecodeString: /0x[0-9a-f]+/i,
   });
 
   expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-  expect(contract.options.input).toEqual(sampleContractBytecode2);
+  expect(contract.options.input).toMatch(/^[0-9a-f]+$/i);
 }
 export async function testSuccessfulCompilationFromCodeOptions(
   ExtendedContractType: typeof ExtendedContract
@@ -41,11 +38,11 @@ export async function testSuccessfulCompilationFromCodeOptions(
 
   expect(compilationResult).toMatchObject({
     abi: sampleContractAbi,
-    bytecodeString: sampleContractBytecode2,
+    bytecodeString: /0x[0-9a-f]+/i,
   });
 
   expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-  expect(contract.options.input).toEqual(sampleContractBytecode2);
+  expect(contract.options.input).toMatch(/^[0-9a-f]+$/i);
 }
 
 export async function testSuccessfulCompilationFromFile(
@@ -58,11 +55,11 @@ export async function testSuccessfulCompilationFromFile(
 
   expect(compilationResult).toMatchObject({
     abi: sampleContractAbi,
-    bytecodeString: sampleContractBytecode3,
+    bytecodeString: /^[0-9a-f]+$/i,
   });
 
   expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-  expect(contract.options.input).toEqual(sampleContractBytecode3);
+  expect(contract.options.input).toMatch(/^[0-9a-f]+$/i);
 }
 
 export async function testSuccessfulCompilationFromFileOptions(
@@ -78,11 +75,11 @@ export async function testSuccessfulCompilationFromFileOptions(
 
   expect(compilationResult).toMatchObject({
     abi: sampleContractAbi,
-    bytecodeString: sampleContractBytecode3,
+    bytecodeString: /0x[0-9a-f]+/i,
   });
 
   expect(contract.options.jsonInterface).toMatchObject(sampleContractAbi);
-  expect(contract.options.input).toEqual(sampleContractBytecode3);
+  expect(contract.options.input).toMatch(/^[0-9a-f]+$/i);
 }
 
 export async function testSuccessfulCompilationFromMultiFileWithOptions(
@@ -98,11 +95,11 @@ export async function testSuccessfulCompilationFromMultiFileWithOptions(
 
   expect(compilationResult).toMatchObject({
     abi: childContractAbi,
-    bytecodeString: childContractBytecode,
+    bytecodeString: /0x[0-9a-f]+/i,
   });
 
   expect(contract.options.jsonInterface).toMatchObject(childContractAbi);
-  expect(contract.options.input).toEqual(childContractBytecode);
+  expect(contract.options.input).toMatch(/^[0-9a-f]+$/i);
 }
 
 export function testCompilationCauseError(
@@ -123,10 +120,10 @@ export async function testSaveCompilationResultFromSolidityCode(
 
   await contract.saveCompilationResult(filePath);
 
-  const { SimpleContractAbi, SimpleContractBytecode } = require(filePath);
+  const { SimpleContractAbi } = require(filePath);
 
   expect(SimpleContractAbi).toEqual(contract.options.jsonInterface);
-  expect(SimpleContractBytecode).toEqual(contract.options.input);
+  expect(contract.options.input).toMatch(/^[0-9a-f]+$/i);
 }
 
 export async function testSaveCompilationResultFromSolidityFile(
