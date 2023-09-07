@@ -25,12 +25,8 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Set OS environment variable
-        env:
-          TEST_ON_OS: ${{ runner.os }}
-        run: echo "OS is $TEST_ON_OS"
       - name: Test
-        run: yarn test --ci --coverage --maxWorkers=2
+        run: export TEST_ON_OS=${{ runner.os }} && OS=${{ matrix.os }} && yarn test --ci --coverage --maxWorkers=2
 
       - name: Build
         run: yarn build
