@@ -27,6 +27,9 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Set OS environment variable
+        run: echo "OS=${{ runner.os }}" >> $GITHUB_ENV
+      
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
 
