@@ -7,7 +7,7 @@ export const contractFileWithPath =
 export const contractName = 'SimpleContract';
 
 export const contractFile2WithPath =
-  process.env.TEST_ON_OS === 'windows'
+  process.env.TEST_ON_OS === 'windows-latest'
     ? './test/smart_contracts/child-contract_for-windows.sol'
     : './test/smart_contracts/child-contract.sol';
 
