@@ -101,7 +101,10 @@ export class SolidityCompiler {
       } catch (error) {
         // when running for the first time, sometimes the permission is denied
         // so we wait for a second and try again
-        if ((error as Error).message.includes('permission denied')) {
+        if (
+          (error as Error).message.includes('permission denied') || // linux and macOS
+          (error as Error).message.includes('operation not permitted') // windows
+        ) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           result = await compileSol(fileOrFiles as any, 'auto');
         } else {
@@ -141,7 +144,10 @@ export class SolidityCompiler {
       } catch (error) {
         // when running for the first time, sometimes the permission is denied
         // so we wait for a second and try again
-        if ((error as Error).message.includes('permission denied')) {
+        if (
+          (error as Error).message.includes('permission denied') || // linux and macOS
+          (error as Error).message.includes('operation not permitted') // windows
+        ) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           result = await compileSourceString(fileName, sourceCode, 'auto');
         } else {
