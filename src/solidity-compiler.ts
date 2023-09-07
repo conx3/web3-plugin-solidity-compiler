@@ -45,9 +45,9 @@ export class SolidityCompiler {
     result: CompileResult
   ): ScaffoldedCompileResult {
     let scaffoldedRes = result as ScaffoldedCompileResult;
-    Object.keys(result.data.contracts).forEach(fileName => {
+    Object.keys(result.data.contracts).forEach((fileName) => {
       scaffoldedRes[fileName] = {} as any;
-      Object.keys(result.data.contracts[fileName]).forEach(contractName => {
+      Object.keys(result.data.contracts[fileName]).forEach((contractName) => {
         const contract: {
           abi: ContractAbi;
           evm: { bytecode: { object: string } };
@@ -95,7 +95,20 @@ export class SolidityCompiler {
   ): Promise<ScaffoldedCompileResult>;
   public static async compileSol(fileOrFiles: string | string[]) {
     try {
-      let result = await compileSol(fileOrFiles as any, 'auto');
+      let result;
+      try {
+        result = await compileSol(fileOrFiles as any, 'auto');
+      } catch (error) {
+        // when running for the first time, sometimes the permission is denied
+        // so we wait for a second and try again
+        if ((error as Error).message.includes('permission denied')) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          result = await compileSol(fileOrFiles as any, 'auto');
+        } else {
+          throw error;
+        }
+      }
+
       result = SolidityCompiler.scaffoldCompiledContract(result);
 
       return result;
@@ -122,7 +135,19 @@ export class SolidityCompiler {
     sourceCode: string
   ): Promise<ScaffoldedCompileResult> {
     try {
-      let result = await compileSourceString(fileName, sourceCode, 'auto');
+      let result;
+      try {
+        result = await compileSourceString(fileName, sourceCode, 'auto');
+      } catch (error) {
+        // when running for the first time, sometimes the permission is denied
+        // so we wait for a second and try again
+        if ((error as Error).message.includes('permission denied')) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          result = await compileSourceString(fileName, sourceCode, 'auto');
+        } else {
+          throw error;
+        }
+      }
 
       const scaffoldedRes = SolidityCompiler.scaffoldCompiledContract(result);
 
@@ -166,7 +191,7 @@ export class SolidityCompiler {
         .contractName;
       if (path) {
         SolidityCompiler.compileSol(path as any)
-          .then(compilationRes => {
+          .then((compilationRes) => {
             let abi;
             let bytecodeString;
             if (contractName) {
@@ -175,7 +200,7 @@ export class SolidityCompiler {
                 contractPath = path;
               } else {
                 contractPath = Object.keys(compilationRes.data.contracts)?.find(
-                  p => compilationRes[p][contractName as string]
+                  (p) => compilationRes[p][contractName as string]
                 ) as string;
               }
               abi = compilationRes[contractPath][contractName].abi;
@@ -213,7 +238,7 @@ export class SolidityCompiler {
       } else if (contractSourceCode) {
         let fileName = 'contract';
         SolidityCompiler.compileSourceString(fileName, contractSourceCode)
-          .then(compilationRes => {
+          .then((compilationRes) => {
             if (compilationRes.abi && compilationRes.bytecodeString) {
               // Ignore the typescript error: "Property 'jsonInterface' does not exist on type 'ContractOptions'."
               // @ts-ignore
