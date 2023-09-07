@@ -70,4 +70,3 @@ export const childContractAbi = [
     type: 'function',
   },
 ] as const;
-
