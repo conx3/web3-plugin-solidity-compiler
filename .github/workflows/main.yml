@@ -28,8 +28,7 @@ jobs:
       - name: Set OS environment variable
         env:
           RUNNER_OS: ${{ runner.os }}
-          MATRIX_OS: ${{ matrix.os }}
-        run: echo "RUNNER_OS is $RUNNER_OS and MATRIX_OS is $MATRIX_OS"
+        run: echo "RUNNER_OS is $RUNNER_OS"
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
 
