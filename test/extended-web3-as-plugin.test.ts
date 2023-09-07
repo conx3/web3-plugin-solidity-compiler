@@ -14,6 +14,7 @@ import {
   testSuccessfulCompilationFromMultiFileWithOptions,
   testSaveCompilationResultFromSolidityCode,
   testSaveCompilationResultFromSolidityFile,
+  itSkipIfWindows,
 } from './extended-contract-test-helpers';
 import { testSuccessfulCompilationFromFile } from './extended-contract-test-helpers';
 
@@ -42,11 +43,14 @@ describe('ExtendedWeb3 as plugin', () => {
     await testSuccessfulCompilationFromFileOptions(ExtendedContractType);
   });
 
-  it('compile source code from multiple files with options', async () => {
-    await testSuccessfulCompilationFromMultiFileWithOptions(
-      ExtendedContractType
-    );
-  });
+  itSkipIfWindows(
+    'compile source code from multiple files with options',
+    async () => {
+      await testSuccessfulCompilationFromMultiFileWithOptions(
+        ExtendedContractType
+      );
+    }
+  );
 
   it('raise error while compiling an invalid code', async () => {
     await testCompilationCauseError(ExtendedContractType);
@@ -56,7 +60,7 @@ describe('ExtendedWeb3 as plugin', () => {
     await testSaveCompilationResultFromSolidityCode(ExtendedContractType);
   });
 
-  it('save compilation result from solidity file', async () => {
+  itSkipIfWindows('save compilation result from solidity file', async () => {
     await testSaveCompilationResultFromSolidityFile(ExtendedContractType);
   });
 

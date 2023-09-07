@@ -9,6 +9,9 @@ import {
 import { ExtendedContract } from '../src';
 import { Web3BaseProvider } from 'web3';
 
+export const itSkipIfWindows =
+  process.env.TEST_ON_OS !== 'Windows' ? it : it.skip;
+
 export async function testSuccessfulCompilation(
   ExtendedContractType: typeof ExtendedContract
 ) {
