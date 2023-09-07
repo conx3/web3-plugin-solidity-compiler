@@ -7,7 +7,9 @@ export const contractFileWithPath =
 export const contractName = 'SimpleContract';
 
 export const contractFile2WithPath =
-  './test/smart_contracts/child-contract.sol';
+  process.env.TEST_ON_OS === 'windows'
+    ? './test/smart_contracts/child-contract_for-windows.sol'
+    : './test/smart_contracts/child-contract.sol';
 
 // Read the Solidity source code from the file system
 const contractPath = path.join(__dirname, fileName);
