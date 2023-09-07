@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./simple-contract.sol";
-
+// The following works on linux, macOS and windows
+// However, if you need to run only on linux or macOS you can use: import "./simple-contract.sol";
+import "simple-contract.sol"; 
 contract ChildContract is SimpleContract {
     string public myText;
 
