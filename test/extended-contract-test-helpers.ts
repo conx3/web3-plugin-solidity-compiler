@@ -9,6 +9,7 @@ import {
 import { ExtendedContract } from '../src';
 import { Web3BaseProvider } from 'web3';
 
+console.log('process.env.TEST_ON_OS', process.env.TEST_ON_OS);
 export const itSkipIfWindows =
   process.env.TEST_ON_OS !== 'Windows' ? it : it.skip;
 
