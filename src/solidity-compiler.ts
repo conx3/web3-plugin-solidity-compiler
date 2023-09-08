@@ -96,17 +96,24 @@ export class SolidityCompiler {
   public static async compileSol(fileOrFiles: string | string[]) {
     try {
       let result;
-      try {
-        result = await compileSol(fileOrFiles as any, 'auto');
-      } catch (error) {
-        // when running for the first time, sometimes the permission is denied
-        // so we wait for a second and try again
-        if ((error as Error).message.includes('permission denied')) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+      let error;
+      let triesCounter = 0;
+      do {
+        try {
+          triesCounter += 1;
           result = await compileSol(fileOrFiles as any, 'auto');
-        } else {
-          throw error;
+        } catch (err) {
+          error = err;
+          // when running for the first time, sometimes the permission is denied
+          // so we wait for a second before trying again
+          if (SolidityCompiler.retryCondition(error, triesCounter)) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
         }
+      } while (SolidityCompiler.retryCondition(error, triesCounter));
+
+      if (!result) {
+        throw error;
       }
 
       result = SolidityCompiler.scaffoldCompiledContract(result);
@@ -136,17 +143,24 @@ export class SolidityCompiler {
   ): Promise<ScaffoldedCompileResult> {
     try {
       let result;
-      try {
-        result = await compileSourceString(fileName, sourceCode, 'auto');
-      } catch (error) {
-        // when running for the first time, sometimes the permission is denied
-        // so we wait for a second and try again
-        if ((error as Error).message.includes('permission denied')) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+      let error;
+      let triesCounter = 0;
+      do {
+        try {
+          triesCounter += 1;
           result = await compileSourceString(fileName, sourceCode, 'auto');
-        } else {
-          throw error;
+        } catch (err) {
+          error = err;
+          // when running for the first time, sometimes the permission is denied
+          // so we wait for a second before trying again
+          if (SolidityCompiler.retryCondition(error, triesCounter)) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
         }
+      } while (SolidityCompiler.retryCondition(error, triesCounter));
+
+      if (!result) {
+        throw error;
       }
 
       const scaffoldedRes = SolidityCompiler.scaffoldCompiledContract(result);
@@ -166,6 +180,15 @@ export class SolidityCompiler {
       }
       throw e;
     }
+  }
+
+  private static retryCondition(error: unknown, triesCounter: number) {
+    return (
+      error &&
+      ((error as Error).message.includes('permission denied') || // linux and macOS
+        (error as Error).message.includes('operation not permitted')) && // windows
+      triesCounter <= 10
+    );
   }
 
   public static compileAndFillProperties<Abi extends ContractAbi>(

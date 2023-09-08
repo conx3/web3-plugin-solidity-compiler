@@ -8166,10 +8166,10 @@ web3-net@^4.0.5:
     web3-types "^1.1.1"
     web3-utils "^4.0.5"
 
-web3-plugin-craftsman@^0.1.0-alpha.5:
-  version "0.1.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/web3-plugin-craftsman/-/web3-plugin-craftsman-0.1.0-alpha.5.tgz#8fe33b2adea1b3b0deb952ef5167635db887f5a0"
-  integrity sha512-Toz0v04IxCJpgf/8fYP9OpBDFaybQK/YT8KWJUdNkWC9v3TspeuO6fIt3namUIV3ahKEwdwff8aQXLlNCtRbIg==
+web3-plugin-craftsman@^0.1.0-alpha.6:
+  version "0.1.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/web3-plugin-craftsman/-/web3-plugin-craftsman-0.1.0-alpha.6.tgz#68a89e5458a941e370d17a04d1df70f46c932578"
+  integrity sha512-zopFQLAeexaa6qCKug8FfM36WWSHGj+b1Y8dFZAgwM9T6tXlH+8apuOspdPNLogB+4Myz/55ezD1s5P1FadVLg==
   dependencies:
     solc-typed-ast "^16.1.0"
     web3 "^4.1.1"

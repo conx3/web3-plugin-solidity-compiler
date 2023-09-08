@@ -25,6 +25,10 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Set OS environment variable
+        env:
+          RUNNER_OS: ${{ runner.os }}
+        run: echo "RUNNER_OS is $RUNNER_OS"
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
 
