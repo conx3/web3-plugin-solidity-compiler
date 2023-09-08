@@ -187,7 +187,7 @@ export class SolidityCompiler {
       error &&
       ((error as Error).message.includes('permission denied') || // linux and macOS
         (error as Error).message.includes('operation not permitted')) && // windows
-      triesCounter <= 10
+      triesCounter <= 30 // try many times before giving up and throwing the error
     );
   }
 
