@@ -1,6 +1,8 @@
 # web3.js Plugin: web3-plugin-craftsman
 
-Smoothly interact with a Smart Contract directly from its Solidity Code, or save its compilation for later use.
+[![Dependency Status][downloads-image]][npm-url]
+
+Interact smoothly with a Smart Contract, directly from its Solidity Code, or save its compilation for later use.
 
 ## Description
 
@@ -320,3 +322,8 @@ If you like to contribute to the development of this package, you may check the 
 
 If you are new in the space and would like to follow a tutorial, here is one: 
 [Interacting with Ethereum Smart Contracts, Directly from Solidity Source Code`](https://medium.com/dapps-decentralized-apps-development/interacting-with-ethereum-smart-contracts-directly-from-solidity-source-code-9caf55457eb8)
+
+
+
+[npm-url]: https://npmjs.org/package/@conx3/web3-plugin-near
+[downloads-image]: https://img.shields.io/npm/dm/@conx3/web3-plugin-near?label=npm%20downloads
