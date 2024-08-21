@@ -360,4 +360,71 @@ export const ${compilationResult.contractName}Bytecode = '${
     }
     await fs.writeFileSync(contractPath, fileContent, 'utf8');
   }
+
+  public static async compileAndSaveFromFolder(folderPath: string): Promise<ScaffoldedCompileResult> {
+    try {
+        const files = await fs.promises.readdir(folderPath);
+        let result: ScaffoldedCompileResult | undefined;
+        let error;
+        let triesCounter = 0;
+        let foundSolidityFile = false;
+
+        do {
+            try {
+                triesCounter += 1;
+
+                for (const file of files) {
+                    if (file.endsWith('.sol')) {
+                        foundSolidityFile = true;
+                        const filePath = path.join(folderPath, file);
+
+                        // Compile the Solidity file
+                        const compileResult = await compileSol(filePath, "auto");
+
+                        // Scaffold the compiled contract result
+                        result = SolidityCompiler.scaffoldCompiledContract(compileResult);
+
+                        // Save the compilation result in the same folder
+                        await SolidityCompiler.saveCompilationResult(folderPath, result);
+
+                        //return result;
+                    }
+                }
+
+                if (!foundSolidityFile) {
+                    throw new Error('No Solidity files found.');
+                }
+
+                break;
+            } catch (err) {
+                error = err;
+                // Retry if the error meets the retry condition
+                if (SolidityCompiler.retryCondition(error, triesCounter)) {
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+            }
+        } while (SolidityCompiler.retryCondition(error, triesCounter));
+
+        if (!result) {
+            throw error;
+        }
+
+        return result;
+    } catch (e) {
+        if (e instanceof CompileFailedError) {
+            console.error("Compile errors encountered:");
+
+            for (const failure of e.failures) {
+                console.error(`Solc ${failure.compilerVersion}:`);
+
+                for (const error of failure.errors) {
+                    console.error(error);
+                }
+            }
+        } else {
+            console.error(e);
+        }
+        throw e;
+    }
+  }
 }

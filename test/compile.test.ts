@@ -9,6 +9,7 @@ import {
   contractName,
   sampleContractAbi,
   contractFileWithPath,
+  contractFolder,
 } from './smart_contracts/contracts-constants';
 
 describe('compile', () => {
@@ -35,4 +36,17 @@ describe('compile', () => {
     expect(res[fileWithPath][contractName].abi).toEqual(sampleContractAbi);
     expect(res[fileWithPath][contractName]).toEqual(res[contractName]);
   });
+
+  it('compile folder', async () => {
+    const folderWithPath = contractFolder;
+    const res = await SolidityCompiler.compileAndSaveFromFolder(folderWithPath);
+
+    //console.log('Compile Result:', res); 
+
+    expect(res[folderWithPath][contractName].bytecodeString).toMatch(
+      /^[0-9a-f]+$/i
+    );
+    expect(res[folderWithPath][contractName].abi).toEqual(sampleContractAbi);
+    expect(res[folderWithPath][contractName]).toEqual(res[contractName]);
+});
 });
