@@ -9,6 +9,8 @@ export const contractName = 'SimpleContract';
 export const contractFile2WithPath =
   './test/smart_contracts/child-contract.sol';
 
+export const contractFolder = './test/folder_smart_contract';
+
 // Read the Solidity source code from the file system
 const contractPath = path.join(__dirname, fileName);
 export const sourceCode = fs.readFileSync(contractPath, 'utf8');

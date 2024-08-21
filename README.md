@@ -327,3 +327,50 @@ If you are new in the space and would like to follow a tutorial, here is one:
 
 [npm-url]: https://npmjs.org/package/@conx3/web3-plugin-near
 [downloads-image]: https://img.shields.io/npm/dm/@conx3/web3-plugin-near?label=npm%20downloads
+
+### For Developers Working with Open Source Software on Windows
+
+If you encounter the following error while trying to run npm install:
+
+npm error code EBADPLATFORM
+npm error notsup Unsupported platform for n@9.2.0: wanted {"os":"!win32"} (current: {"os":"win32"})
+npm error notsup Valid os:  !win32
+npm error notsup Actual os: win32
+
+This error indicates that the package n@9.2.0 is not supported on Windows. The package has a condition specifying that it only supports non-Windows operating systems (!win32).
+
+To resolve this issue, please follow these steps:
+
+1. Open PowerShell as an Administrator and run the following command:
+   
+   wsl --install
+   
+
+2. Install a Linux distribution:
+
+   After restarting, open the Microsoft Store, search for your preferred Linux distribution (e.g., Ubuntu), and install it.
+
+3. Open the WSL terminal (e.g., Ubuntu) and update the packages:
+   
+   sudo apt update
+   sudo apt upgrade
+   
+   You may be prompted to set a username and password for the new system. You can enter a username and password of your choice and save them in a secure location.
+
+4. After installing the new system (e.g., Ubuntu), you can use the following command to install Node.js:
+   
+   nvm install node
+   
+   Alternatively, you can navigate to your project directory through Ubuntu (WSL) using the following command:
+   
+   cd /mnt/path/to/your/project
+   
+   Then, run:
+   
+   npm i web3
+   
+   This will install the web3, npm, and node packages in your project.
+
+You can use the following commands to verify that everything is working correctly:
+npm -v
+node -v
